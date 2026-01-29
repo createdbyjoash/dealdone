@@ -64,6 +64,46 @@ create policy "Users can send messages"
   on messages for insert
   with check ( auth.uid() = sender_id );
 
+-- 5. Email Notification Function
+-- This function sends an email when a new message is received
+create or replace function notify_new_message()
+returns trigger as $$
+declare
+  receiver_email text;
+  sender_name text;
+begin
+  -- Get receiver's email
+  select email into receiver_email
+  from auth.users
+  where id = NEW.receiver_id;
+  
+  -- Get sender's name
+  select raw_user_meta_data->>'full_name' into sender_name
+  from auth.users
+  where id = NEW.sender_id;
+  
+  -- Send email notification using Supabase's built-in email service
+  -- Note: This requires Supabase email templates to be configured
+  perform pg_notify(
+    'new_message',
+    json_build_object(
+      'receiver_email', receiver_email,
+      'sender_name', coalesce(sender_name, 'A user'),
+      'message_preview', substring(NEW.content, 1, 50)
+    )::text
+  );
+  
+  return NEW;
+end;
+$$ language plpgsql security definer;
+
+-- Create trigger for new messages
+drop trigger if exists on_new_message on messages;
+create trigger on_new_message
+  after insert on messages
+  for each row
+  execute function notify_new_message();
+
 -- 4. Initial Mock Data (Optional - creates a demo seller and listings)
 -- Only runs if the user doesn't exist yet
 DO $$

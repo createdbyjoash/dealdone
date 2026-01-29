@@ -109,6 +109,61 @@ const db = {
             return await supabaseClient.from('messages').insert([msgData]);
         }
         return { error: 'No client' };
+    },
+
+    // Get unread message count
+    getUnreadCount: async (userId) => {
+        if (supabaseClient) {
+            const { count, error } = await supabaseClient
+                .from('messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('receiver_id', userId)
+                .eq('is_read', false);
+            return { count: count || 0, error };
+        }
+        return { count: 0, error: 'No client' };
+    },
+
+    // Mark messages as read
+    markAsRead: async (messageIds) => {
+        if (supabaseClient) {
+            return await supabaseClient
+                .from('messages')
+                .update({ is_read: true })
+                .in('id', messageIds);
+        }
+        return { error: 'No client' };
+    },
+
+    // Subscribe to new messages (real-time)
+    subscribeToMessages: (userId, callback) => {
+        if (supabaseClient) {
+            const channel = supabaseClient
+                .channel('messages')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'messages',
+                        filter: `receiver_id=eq.${userId}`
+                    },
+                    (payload) => {
+                        callback(payload.new);
+                    }
+                )
+                .subscribe();
+
+            return channel;
+        }
+        return null;
+    },
+
+    // Unsubscribe from real-time updates
+    unsubscribe: (channel) => {
+        if (channel && supabaseClient) {
+            supabaseClient.removeChannel(channel);
+        }
     }
 };
 

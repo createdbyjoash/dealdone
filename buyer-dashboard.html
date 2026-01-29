@@ -151,7 +151,8 @@
                 <p style="color: var(--text-muted);">Browse verified businesses matching your criteria.</p>
             </div>
             <div class="flex gap-4">
-                <button class="btn btn-secondary"><i data-lucide="bell"></i></button>
+                <button id="notification-bell" class="btn btn-secondary"
+                    onclick="window.location.href='buyer-messages.html'"><i data-lucide="bell"></i></button>
                 <div class="flex items-center gap-2">
                     <div
                         style="width: 32px; height: 32px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">
@@ -283,6 +284,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
+    <script src="js/notifications.js"></script>
     <script>
         lucide.createIcons();
 
@@ -460,6 +462,12 @@
 
         // Initialize
         loadBusinesses();
+
+        // Initialize notifications
+        if (window.dealDoneNotifications) {
+            window.dealDoneNotifications.init();
+            window.dealDoneNotifications.requestPermission();
+        }
     </script>
 </body>
 
