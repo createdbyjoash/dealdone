@@ -206,7 +206,10 @@
 
             try {
                 if (isLogin) {
-                    const { data, error } = await window.dealDone.auth.signIn(email, password);
+                    const { data, error } = await window.dealDone.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
                     if (error) throw error;
 
                     // On success, redirect to appropriate dashboard
@@ -215,10 +218,14 @@
                     window.location.href = type === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
                 } else {
                     const fullName = document.getElementById('full_name').value;
-                    const { data, error } = await window.dealDone.auth.signUp(email, password, {
-                        data: {
-                            full_name: fullName,
-                            type: selectedType
+                    const { data, error } = await window.dealDone.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: {
+                                full_name: fullName,
+                                type: selectedType
+                            }
                         }
                     });
                     if (error) throw error;
