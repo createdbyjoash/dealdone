@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Businesses | DealDone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            background: var(--bg-main);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .saved-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: var(--space-6);
+            display: flex;
+            gap: var(--space-6);
+            margin-bottom: var(--space-4);
+            transition: all 0.2s;
+        }
+
+        .saved-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav style="flex: 1;">
+            <a href="buyer-dashboard.html" class="nav-link"><i data-lucide="search"></i> Browse Businesses</a>
+            <a href="buyer-saved.html" class="nav-link active"><i data-lucide="bookmark"></i> Saved</a>
+            <a href="buyer-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+            <a href="buyer-preferences.html" class="nav-link"><i data-lucide="settings"></i> Preferences</a>
+        </nav>
+
+        <button id="logout-btn" class="nav-link"
+            style="border: none; background: none; width: 100%; cursor: pointer; margin-top: auto;">
+            <i data-lucide="log-out"></i> Logout
+        </button>
+    </div>
+
+    <main class="main-content">
+        <header style="margin-bottom: var(--space-8);">
+            <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1);">Saved Businesses</h1>
+            <p style="color: var(--text-muted);">Your bookmarked investment opportunities.</p>
+        </header>
+
+        <div id="saved-list">
+            <!-- Empty State -->
+            <div class="card flex flex-col items-center justify-center"
+                style="text-align: center; padding: var(--space-12);">
+                <div
+                    style="width: 64px; height: 64px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+                    <i data-lucide="bookmark" size="32" color="var(--text-muted)"></i>
+                </div>
+                <h3>No Saved Businesses Yet</h3>
+                <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto var(--space-6);">
+                    Start saving businesses you're interested in by clicking the heart icon on any listing.
+                </p>
+                <a href="buyer-dashboard.html" class="btn btn-primary">Browse Businesses</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+        if (!window.dealDone.auth.getUser()) window.location.href = 'auth.html';
+        document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+    </script>
+</body>
+
+</html>

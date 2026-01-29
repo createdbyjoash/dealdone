@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferences | DealDone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            background: var(--bg-main);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav style="flex: 1;">
+            <a href="buyer-dashboard.html" class="nav-link"><i data-lucide="search"></i> Browse Businesses</a>
+            <a href="buyer-saved.html" class="nav-link"><i data-lucide="bookmark"></i> Saved</a>
+            <a href="buyer-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+            <a href="buyer-preferences.html" class="nav-link active"><i data-lucide="settings"></i> Preferences</a>
+        </nav>
+
+        <button id="logout-btn" class="nav-link"
+            style="border: none; background: none; width: 100%; cursor: pointer; margin-top: auto;">
+            <i data-lucide="log-out"></i> Logout
+        </button>
+    </div>
+
+    <main class="main-content">
+        <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+            <div>
+                <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1);">Preferences</h1>
+                <p style="color: var(--text-muted);">Manage your account and investment criteria.</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 gap-8" style="max-width: 800px;">
+            <!-- Profile Information -->
+            <div class="card">
+                <h3 style="margin-bottom: var(--space-6);">Profile Information</h3>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="full-name-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="email-input" disabled
+                            style="background: var(--bg-main); color: var(--text-muted);">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </form>
+            </div>
+
+            <!-- Investment Criteria -->
+            <div class="card">
+                <h3 style="margin-bottom: var(--space-6);">Investment Criteria</h3>
+                <form id="criteria-form">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Min Budget ($)</label>
+                            <input type="number" class="form-input" id="min-budget" placeholder="500000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Max Budget ($)</label>
+                            <input type="number" class="form-input" id="max-budget" placeholder="5000000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Industries</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2);">
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-main); border-radius: var(--radius-md); cursor: pointer;">
+                                <input type="checkbox" value="Technology"> Technology
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-main); border-radius: var(--radius-md); cursor: pointer;">
+                                <input type="checkbox" value="Retail"> Retail
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-main); border-radius: var(--radius-md); cursor: pointer;">
+                                <input type="checkbox" value="Food & Beverage"> Food & Beverage
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-main); border-radius: var(--radius-md); cursor: pointer;">
+                                <input type="checkbox" value="Logistics"> Logistics
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: var(--bg-main); border-radius: var(--radius-md); cursor: pointer;">
+                                <input type="checkbox" value="Service"> Service
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Criteria</button>
+                </form>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card">
+                <h3 style="margin-bottom: var(--space-6);">Notifications</h3>
+                <div class="flex items-center justify-between"
+                    style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
+                    <div>
+                        <div style="font-weight: 600;">New Listing Alerts</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">Get notified when businesses
+                            matching your criteria are listed.</div>
+                    </div>
+                    <input type="checkbox" checked style="width: 20px; height: 20px;">
+                </div>
+                <div class="flex items-center justify-between" style="padding: var(--space-4) 0;">
+                    <div>
+                        <div style="font-weight: 600;">Message Notifications</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">Receive emails when you get a new
+                            message.</div>
+                    </div>
+                    <input type="checkbox" checked style="width: 20px; height: 20px;">
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card" style="border-color: #fca5a5; background: #fef2f2;">
+                <h3 style="margin-bottom: var(--space-4); color: var(--danger);">Danger Zone</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted);">Once you delete your account, there is no
+                    going back. Please be certain.</p>
+                <button class="btn"
+                    style="background: white; color: var(--danger); border: 1px solid var(--danger);">Delete
+                    Account</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+        const user = window.dealDone.auth.getUser();
+        if (!user) window.location.href = 'auth.html';
+
+        document.getElementById('full-name-input').value = user.user_metadata?.full_name || '';
+        document.getElementById('email-input').value = user.email || '';
+        document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Profile saved successfully!');
+        });
+
+        document.getElementById('criteria-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Investment criteria saved!');
+        });
+    </script>
+</body>
+
+</html>
