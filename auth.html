@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join DealDone | Create Your Account</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, #eff6ff 0%, transparent 40%),
+                radial-gradient(circle at bottom left, #fdf4ff 0%, transparent 40%);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-8);
+        }
+
+        .type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .type-option {
+            border: 2px solid var(--border);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-option.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .type-option i {
+            display: block;
+            margin: 0 auto var(--space-2);
+            color: var(--secondary);
+        }
+
+        .type-option.active i {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card card animate-fade-in">
+            <div style="text-align: center; margin-bottom: var(--space-8);">
+                <a href="index.html" class="flex items-center justify-center gap-2"
+                    style="text-decoration: none; color: inherit; margin-bottom: var(--space-4);">
+                    <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                        <i data-lucide="handshake"></i>
+                    </div>
+                    <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+                </a>
+                <h2 id="auth-title">Create an account</h2>
+                <p id="auth-subtitle" style="color: var(--text-muted);">Join the premium business marketplace</p>
+            </div>
+
+            <form id="auth-form">
+                <div id="signup-fields">
+                    <div class="form-group">
+                        <label class="form-label">I am a...</label>
+                        <div class="type-selector">
+                            <div class="type-option active" data-type="owner">
+                                <i data-lucide="briefcase"></i>
+                                <span style="font-weight: 600;">Business Owner</span>
+                            </div>
+                            <div class="type-option" data-type="buyer">
+                                <i data-lucide="wallet"></i>
+                                <span style="font-weight: 600;">Potential Buyer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="full_name" class="form-input" placeholder="John Doe">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-4);">
+                    <span id="submit-text">Create Account</span>
+                </button>
+            </form>
+
+            <div style="margin-top: var(--space-6); text-align: center; font-size: 0.875rem;">
+                <span id="footer-text">Already have an account?</span>
+                <a href="#" id="toggle-auth"
+                    style="color: var(--primary); font-weight: 600; text-decoration: none; margin-left: 4px;">Sign
+                    in</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const form = document.getElementById('auth-form');
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const submitText = document.getElementById('submit-text');
+        const toggleAuth = document.getElementById('toggle-auth');
+        const signupFields = document.getElementById('signup-fields');
+        const footerText = document.getElementById('footer-text');
+        const typeOptions = document.querySelectorAll('.type-option');
+
+        let isLogin = false;
+        let selectedType = 'owner';
+
+        // Set initial state from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'login') {
+            setLoginMode();
+        }
+        if (urlParams.get('type')) {
+            selectedType = urlParams.get('type');
+            updateTypeSelection();
+        }
+
+        function setLoginMode() {
+            isLogin = true;
+            title.textContent = 'Welcome back';
+            subtitle.textContent = 'Login to your DealDone account';
+            submitText.textContent = 'Sign In';
+            toggleAuth.textContent = 'Create account';
+            footerText.textContent = "Don't have an account?";
+            signupFields.style.display = 'none';
+        }
+
+        function setSignupMode() {
+            isLogin = false;
+            title.textContent = 'Create an account';
+            subtitle.textContent = 'Join the premium business marketplace';
+            submitText.textContent = 'Create Account';
+            toggleAuth.textContent = 'Sign in';
+            footerText.textContent = 'Already have an account?';
+            signupFields.style.display = 'block';
+        }
+
+        toggleAuth.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isLogin) setSignupMode();
+            else setLoginMode();
+        });
+
+        typeOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                selectedType = opt.dataset.type;
+                updateTypeSelection();
+            });
+        });
+
+        function updateTypeSelection() {
+            typeOptions.forEach(opt => {
+                if (opt.dataset.type === selectedType) opt.classList.add('active');
+                else opt.classList.remove('active');
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            submitText.textContent = 'Processing...';
+
+            try {
+                if (isLogin) {
+                    const { data, error } = await window.dealDone.auth.signIn(email, password);
+                    if (error) throw error;
+
+                    // On success, redirect to appropriate dashboard
+                    const user = window.dealDone.auth.getUser();
+                    const type = user.user_metadata?.type || 'owner';
+                    window.location.href = type === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
+                } else {
+                    const fullName = document.getElementById('full_name').value;
+                    const { data, error } = await window.dealDone.auth.signUp(email, password, {
+                        full_name: fullName,
+                        type: selectedType
+                    });
+                    if (error) throw error;
+
+                    alert('Registration successful! Redirecting...');
+                    window.location.href = selectedType === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
+                }
+            } catch (err) {
+                alert('Authentication error: ' + err.message);
+                submitText.textContent = isLogin ? 'Sign In' : 'Create Account';
+            }
+        });
+    </script>
+</body>
+
+</html>

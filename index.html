@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealDone | Connect Business Owners and Buyers</title>
+    <meta name="description" content="DealDone is the premium marketplace for buying and selling businesses. Connect with verified owners and serious buyers today.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        .hero {
+            padding: var(--space-16) 0;
+            text-align: center;
+            background: radial-gradient(circle at top right, #eff6ff 0%, transparent 40%),
+                        radial-gradient(circle at bottom left, #fdf4ff 0%, transparent 40%);
+        }
+        
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            margin-bottom: var(--space-6);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: var(--space-8);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-4);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2" style="text-decoration: none; color: inherit;">
+                <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                    <i data-lucide="handshake"></i>
+                </div>
+                <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+            </a>
+            
+            <nav class="flex items-center gap-8">
+                <a href="#features" class="btn-ghost" style="text-decoration: none; font-weight: 500;">Features</a>
+                <a href="#how-it-works" class="btn-ghost" style="text-decoration: none; font-weight: 500;">How it Works</a>
+                <a href="auth.html?mode=login" class="btn-ghost" style="text-decoration: none; font-weight: 500;">Login</a>
+                <a href="auth.html?mode=signup" class="btn-primary btn">Get Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero dashboard-container">
+            <div class="container animate-fade-in">
+                <span class="badge badge-primary" style="margin-bottom: var(--space-4);">Coming Soon: Real-time Messaging</span>
+                <h1>Connect. Match. <span style="color: var(--primary);">Deal Done.</span></h1>
+                <p>The premium platform connecting visionary business owners with serious buyers. Buy or sell your business with confidence and ease.</p>
+                <div class="flex items-center justify-center gap-4">
+                    <a href="auth.html?type=owner" class="btn btn-primary" style="padding: 1rem 2rem;">I'm a Business Owner</a>
+                    <a href="auth.html?type=buyer" class="btn btn-secondary" style="padding: 1rem 2rem;">I'm a Potential Buyer</a>
+                </div>
+                
+                <div style="margin-top: var(--space-16); position: relative;">
+                    <!-- Placeholder for App Image -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 12px; box-shadow: var(--shadow-xl); max-width: 1000px; margin: 0 auto;">
+                        <div style="aspect-ratio: 16/9; background: #f1f5f9; border-radius: var(--radius-lg); overflow: hidden; position: relative;">
+                             <!-- I will use generate_image to create a mockup later, for now a gradient placeholder -->
+                             <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); opacity: 0.1; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="layout" size="64" color="var(--primary)"></i>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" style="padding: var(--space-16) 0; background: white;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: var(--space-12);">
+                    <h2 style="font-family: 'Outfit';">Everything you need to close the deal</h2>
+                    <p style="color: var(--text-muted);">Streamlined processes for both sides of the transaction.</p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-8">
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="zap"></i></div>
+                        <h3>Smart Matching</h3>
+                        <p>Our algorithm matches businesses with buyers based on valuation, industry, and budget preferences.</p>
+                    </div>
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+                        <h3>Verified Users</h3>
+                        <p>We ensure that both buyers and sellers are verified, reducing noise and focusing on serious intent.</p>
+                    </div>
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="message-square"></i></div>
+                        <h3>Secure Messaging</h3>
+                        <p>Communicate directly and securely with potential partners through our built-in messaging platform.</p>
+                    </div>
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="file-text"></i></div>
+                        <h3>Valuation Tools</h3>
+                        <p>Easy-to-use tools for business owners to determine their market value and prepare for sale.</p>
+                    </div>
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="search"></i></div>
+                        <h3>Advanced Search</h3>
+                        <p>Buyers can filter businesses by industry types, revenue, location, and much more.</p>
+                    </div>
+                    <div class="card">
+                        <div class="feature-icon"><i data-lucide="trending-up"></i></div>
+                        <h3>Real-time Updates</h3>
+                        <p>Get instant notifications on new matches, messages, and offer status updates.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section style="padding: var(--space-16) 0; background: var(--bg-main);">
+            <div class="container">
+                <div class="card" style="background: var(--primary); color: white; padding: var(--space-12); text-align: center;">
+                    <h2 style="font-family: 'Outfit'; color: white;">Ready to start your next chapter?</h2>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-8);">Join thousands of entrepreneurs and investors on DealDone.</p>
+                    <a href="auth.html" class="btn" style="background: white; color: var(--primary); padding: 1rem 2.5rem; font-size: 1.1rem;">Create Your Account</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="padding: var(--space-12) 0; border-top: 1px solid var(--border); background: white;">
+        <div class="container flex justify-between items-center">
+            <div>
+                <span style="font-size: 1.25rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: var(--space-2);">© 2026 DealDone Inc. All rights reserved.</p>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="btn-ghost" style="text-decoration: none; font-size: 0.875rem;">Privacy Policy</a>
+                <a href="#" class="btn-ghost" style="text-decoration: none; font-size: 0.875rem;">Terms of Service</a>
+                <a href="#" class="btn-ghost" style="text-decoration: none; font-size: 0.875rem;">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.style.boxShadow = 'var(--shadow-md)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

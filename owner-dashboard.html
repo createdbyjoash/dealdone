@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard | DealDone</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            background: var(--bg-main);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: var(--space-2) 0;
+        }
+
+        .buyer-match-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-bottom: var(--space-4);
+        }
+
+        .onboarding-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            display: none;
+        }
+
+        .onboarding-card {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: var(--space-8);
+            border-radius: var(--radius-xl);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav style="flex: 1;">
+            <a href="#" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="#" class="nav-link"><i data-lucide="briefcase"></i> My Business</a>
+            <a href="#" class="nav-link"><i data-lucide="users"></i> Potential Buyers</a>
+            <a href="#" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+            <a href="#" class="nav-link"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+
+        <button id="logout-btn" class="nav-link"
+            style="border: none; background: none; width: 100%; cursor: pointer; margin-top: auto;">
+            <i data-lucide="log-out"></i> Logout
+        </button>
+    </div>
+
+    <main class="main-content">
+        <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+            <div>
+                <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1);">Welcome back, <span
+                        id="user-name">Owner</span>!</h1>
+                <p style="color: var(--text-muted);">Here's what's happening with your business listing.</p>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-secondary"><i data-lucide="bell"></i></button>
+                <button class="btn btn-primary" id="list-business-btn"><i data-lucide="plus"></i> Update
+                    Listing</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-3 gap-6" style="margin-bottom: var(--space-8);">
+            <div class="stat-card">
+                <div class="flex items-center gap-2" style="color: var(--text-muted); font-size: 0.875rem;">
+                    <i data-lucide="eye" size="16"></i> Profile Views
+                </div>
+                <div class="stat-value">1,284</div>
+                <div style="color: var(--success); font-size: 0.75rem; font-weight: 600;">+12% from last week</div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-2" style="color: var(--text-muted); font-size: 0.875rem;">
+                    <i data-lucide="users" size="16"></i> Potential Matches
+                </div>
+                <div class="stat-value" id="match-count">24</div>
+                <div style="color: var(--success); font-size: 0.75rem; font-weight: 600;">8 new today</div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-2" style="color: var(--text-muted); font-size: 0.875rem;">
+                    <i data-lucide="dollar-sign" size="16"></i> Est. Valuation
+                </div>
+                <div class="stat-value" id="est-valuation">$1,250,000</div>
+                <div style="color: var(--text-muted); font-size: 0.75rem;">Based on your inputs</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8">
+            <div class="card">
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-6);">
+                    <h3 style="margin-bottom: 0;">Top Buyer Matches</h3>
+                    <a href="#"
+                        style="color: var(--primary); font-size: 0.875rem; font-weight: 600; text-decoration: none;">View
+                        All</a>
+                </div>
+
+                <div id="buyer-matches-list">
+                    <!-- Matches will be loaded here -->
+                    <div class="buyer-match-card">
+                        <div class="flex items-center gap-4">
+                            <div
+                                style="width: 48px; height: 48px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">Private Equity Group A</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Budget: $1M - $5M</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="badge badge-success">98% Match</div>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem;">Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Onboarding / Update Listing Modal -->
+    <div id="onboarding-modal" class="onboarding-modal">
+        <div class="onboarding-card card animate-fade-in">
+            <h2 style="font-family: 'Outfit';">List Your Business</h2>
+            <p style="color: var(--text-muted); margin-bottom: var(--space-6);">Provide some details to find the best
+                buyers.</p>
+
+            <form id="business-form">
+                <div class="form-group">
+                    <label class="form-label">Business Name</label>
+                    <input type="text" id="biz-name" class="form-input" placeholder="e.g. Acme SaaS" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Industry</label>
+                        <select id="biz-industry" class="form-input">
+                            <option>Technology</option>
+                            <option>Retail</option>
+                            <option>Manufacturing</option>
+                            <option>Service</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Annual Revenue ($)</label>
+                        <input type="number" id="biz-revenue" class="form-input" placeholder="500000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asking Price / Valuation ($)</label>
+                    <input type="number" id="biz-valuation" class="form-input" placeholder="1000000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="biz-desc" class="form-input" style="height: 100px;"
+                        placeholder="Tell buyers about your business..."></textarea>
+                </div>
+
+                <div class="flex gap-4" style="margin-top: var(--space-6);">
+                    <button type="button" id="close-modal" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const user = window.dealDone.auth.getUser();
+        if (!user) window.location.href = 'auth.html';
+
+        document.getElementById('user-name').textContent = user.user_metadata?.full_name || 'Owner';
+
+        const modal = document.getElementById('onboarding-modal');
+        const listBtn = document.getElementById('list-business-btn');
+        const closeBtn = document.getElementById('close-modal');
+        const form = document.getElementById('business-form');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        listBtn.addEventListener('click', () => modal.style.display = 'flex');
+        closeBtn.addEventListener('click', () => modal.style.display = 'none');
+
+        logoutBtn.addEventListener('click', () => window.dealDone.auth.signOut());
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                owner_id: user.id,
+                name: document.getElementById('biz-name').value,
+                industry: document.getElementById('biz-industry').value,
+                revenue: document.getElementById('biz-revenue').value,
+                valuation: document.getElementById('biz-valuation').value,
+                description: document.getElementById('biz-desc').value
+            };
+
+            await window.dealDone.db.saveBusiness(data);
+
+            document.getElementById('est-valuation').textContent = '$' + Number(data.valuation).toLocaleString();
+            modal.style.display = 'none';
+            alert('Listing updated successfully!');
+        });
+    </script>
+</body>
+
+</html>
