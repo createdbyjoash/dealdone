@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Business | DealDone</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            background: var(--bg-main);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--space-8);
+        }
+
+        .info-group {
+            margin-bottom: var(--space-6);
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-1);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav style="flex: 1;">
+            <a href="owner-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="owner-business.html" class="nav-link active"><i data-lucide="briefcase"></i> My Business</a>
+            <a href="owner-buyers.html" class="nav-link"><i data-lucide="users"></i> Potential Buyers</a>
+            <a href="owner-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+            <a href="owner-settings.html" class="nav-link"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+
+        <button id="logout-btn" class="nav-link"
+            style="border: none; background: none; width: 100%; cursor: pointer; margin-top: auto;">
+            <i data-lucide="log-out"></i> Logout
+        </button>
+    </div>
+
+    <main class="main-content">
+        <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+            <div>
+                <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1);">My Business</h1>
+                <p style="color: var(--text-muted);">Manage your listing details and visibility.</p>
+            </div>
+            <button id="edit-btn" class="btn btn-secondary"><i data-lucide="pencil"></i> Edit Details</button>
+        </header>
+
+        <div id="loading-state" class="card flex justify-center items-center" style="height: 400px;">
+            <div style="text-align: center;">
+                <i data-lucide="loader" class="animate-spin" style="margin-bottom: var(--space-4);"></i>
+                <p>Loading business details...</p>
+            </div>
+        </div>
+
+        <div id="content-state" style="display: none;">
+            <div class="card">
+                <div class="flex justify-between items-start"
+                    style="margin-bottom: var(--space-8); border-bottom: 1px solid var(--border); padding-bottom: var(--space-6);">
+                    <div>
+                        <div class="flex items-center gap-3" style="margin-bottom: var(--space-2);">
+                            <h2 id="display-name" style="margin: 0; font-size: 1.5rem;">Business Name</h2>
+                            <span id="display-industry" class="badge badge-primary">Industry</span>
+                        </div>
+                        <p style="color: var(--text-muted); margin: 0;">Listed on <span id="display-date">...</span></p>
+                    </div>
+                    <div class="badge badge-success" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                        <i data-lucide="check-circle" size="14" style="margin-right: 4px;"></i> Active Listing
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div>
+                        <div class="info-group">
+                            <div class="info-label">Valuation (Asking Price)</div>
+                            <div class="info-value" style="font-size: 1.5rem; color: var(--primary);">$<span
+                                    id="display-valuation">0</span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Annual Revenue</div>
+                            <div class="info-value">$<span id="display-revenue">0</span></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="info-group">
+                            <div class="info-label">Description / Pitch</div>
+                            <p id="display-desc" style="line-height: 1.6;">No description provided.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="empty-state" class="card flex justify-center items-center"
+            style="display: none; height: 400px; text-align: center;">
+            <div>
+                <div
+                    style="width: 64px; height: 64px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4);">
+                    <i data-lucide="briefcase" color="var(--text-muted)"></i>
+                </div>
+                <h3>No Business Listed Yet</h3>
+                <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto var(--space-6);">You haven't listed
+                    a business for sale yet. Create your profile to start connecting with buyers.</p>
+                <button id="create-btn" class="btn btn-primary">Create Listing</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Shared Edit Modal (Same as dashboard) -->
+    <div id="onboarding-modal" class="onboarding-modal"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1001;">
+        <div class="onboarding-card card animate-fade-in"
+            style="background: white; width: 100%; max-width: 600px; padding: var(--space-8); border-radius: var(--radius-xl);">
+            <h2 style="font-family: 'Outfit';">Edit Business Details</h2>
+            <form id="business-form" style="margin-top: var(--space-6);">
+                <div class="form-group">
+                    <label class="form-label">Business Name</label>
+                    <input type="text" id="biz-name" class="form-input" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Industry</label>
+                        <select id="biz-industry" class="form-input">
+                            <option>Technology</option>
+                            <option>Retail</option>
+                            <option>Manufacturing</option>
+                            <option>Service</option>
+                            <option>Food & Beverage</option>
+                            <option>Logistics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Annual Revenue ($)</label>
+                        <input type="number" id="biz-revenue" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asking Price / Valuation ($)</label>
+                    <input type="number" id="biz-valuation" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="biz-desc" class="form-input" style="height: 100px;"></textarea>
+                </div>
+
+                <div class="flex gap-4" style="margin-top: var(--space-6);">
+                    <button type="button" id="close-modal" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+        const user = window.dealDone.auth.getUser();
+        if (!user) window.location.href = 'auth.html';
+
+        document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+
+        // UI Elements
+        const loadingState = document.getElementById('loading-state');
+        const contentState = document.getElementById('content-state');
+        const emptyState = document.getElementById('empty-state');
+
+        const modal = document.getElementById('onboarding-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const editBtn = document.getElementById('edit-btn');
+        const createBtn = document.getElementById('create-btn');
+        const form = document.getElementById('business-form');
+
+        // Logic
+        async function loadBusiness() {
+            // Re-using the logic from supabase.js 'getBusinesses' but we need to fetch specific owner
+            // Since we didn't export a 'getOwnerBusiness', we'll do raw query here
+            if (!window.dealDone.supabase) {
+                console.warn('Supabase not connected');
+                return;
+            }
+
+            const { data, error } = await window.dealDone.supabase
+                .from('businesses')
+                .select('*')
+                .eq('owner_id', user.id)
+                .single();
+
+            loadingState.style.display = 'none';
+
+            if (data) {
+                renderBusiness(data);
+                contentState.style.display = 'block';
+                emptyState.style.display = 'none';
+                editBtn.style.display = 'inline-flex';
+            } else {
+                contentState.style.display = 'none';
+                emptyState.style.display = 'flex';
+                editBtn.style.display = 'none';
+            }
+        }
+
+        function renderBusiness(data) {
+            document.getElementById('display-name').textContent = data.name;
+            document.getElementById('display-industry').textContent = data.industry;
+            document.getElementById('display-valuation').textContent = Number(data.valuation).toLocaleString();
+            document.getElementById('display-revenue').textContent = Number(data.revenue).toLocaleString();
+            document.getElementById('display-desc').textContent = data.description;
+            document.getElementById('display-date').textContent = new Date(data.created_at).toLocaleDateString();
+
+            // Pre-fill form
+            document.getElementById('biz-name').value = data.name;
+            document.getElementById('biz-industry').value = data.industry;
+            document.getElementById('biz-revenue').value = data.revenue;
+            document.getElementById('biz-valuation').value = data.valuation;
+            document.getElementById('biz-desc').value = data.description;
+        }
+
+        // Modal Logic
+        function openModal() { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; }
+
+        editBtn.addEventListener('click', openModal);
+        createBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                owner_id: user.id,
+                name: document.getElementById('biz-name').value,
+                industry: document.getElementById('biz-industry').value,
+                revenue: document.getElementById('biz-revenue').value,
+                valuation: document.getElementById('biz-valuation').value,
+                description: document.getElementById('biz-desc').value
+            };
+
+            await window.dealDone.db.saveBusiness(data);
+            await loadBusiness(); // Refresh
+            closeModal();
+        });
+
+        loadBusiness();
+    </script>
+</body>
+
+</html>

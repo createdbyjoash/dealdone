@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potential Buyers | DealDone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            background: var(--bg-main);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .buyer-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .buyer-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-6);
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .buyer-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: #e0f2fe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .match-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav style="flex: 1;">
+            <a href="owner-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="owner-business.html" class="nav-link"><i data-lucide="briefcase"></i> My Business</a>
+            <a href="owner-buyers.html" class="nav-link active"><i data-lucide="users"></i> Potential Buyers</a>
+            <a href="owner-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+            <a href="owner-settings.html" class="nav-link"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+
+        <button id="logout-btn" class="nav-link"
+            style="border: none; background: none; width: 100%; cursor: pointer; margin-top: auto;">
+            <i data-lucide="log-out"></i> Logout
+        </button>
+    </div>
+
+    <main class="main-content">
+        <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+            <div>
+                <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1);">Potential Buyers</h1>
+                <p style="color: var(--text-muted);">Investors and groups that match your business profile.</p>
+            </div>
+            <div class="flex gap-4">
+                <select class="form-input" style="width: auto;">
+                    <option>Sort by Match %</option>
+                    <option>Sort by Budget</option>
+                    <option>Newest First</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="buyer-list">
+            <!-- Mock Data 1 -->
+            <div class="buyer-card">
+                <div class="flex items-center gap-6">
+                    <div class="avatar">PE</div>
+                    <div>
+                        <h3 style="margin: 0 0 4px 0; font-size: 1.125rem;">Private Equity Group A</h3>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Interested in Technology,
+                            SaaS</p>
+                        <div class="flex gap-2" style="margin-top: 8px;">
+                            <span class="badge" style="background: var(--bg-main);">Budget: $1M - $5M</span>
+                            <span class="badge" style="background: var(--bg-main);">Fast Closer</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="match-score">98%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Match Score</div>
+                    <button class="btn btn-primary"
+                        onclick="window.location.href='owner-messages.html'">Contact</button>
+                </div>
+            </div>
+
+            <!-- Mock Data 2 -->
+            <div class="buyer-card">
+                <div class="flex items-center gap-6">
+                    <div class="avatar" style="background: #f0fdf4; color: #15803d;">JD</div>
+                    <div>
+                        <h3 style="margin: 0 0 4px 0; font-size: 1.125rem;">John Doe Capital</h3>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Individual Investor • 3
+                            Previous Acquisitions</p>
+                        <div class="flex gap-2" style="margin-top: 8px;">
+                            <span class="badge" style="background: var(--bg-main);">Budget: $500k - $2M</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="match-score" style="color: #65a30d;">85%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Match Score</div>
+                    <button class="btn btn-secondary">Contact</button>
+                </div>
+            </div>
+
+            <!-- Mock Data 3 -->
+            <div class="buyer-card">
+                <div class="flex items-center gap-6">
+                    <div class="avatar" style="background: #fff1f2; color: #e11d48;">V</div>
+                    <div>
+                        <h3 style="margin: 0 0 4px 0; font-size: 1.125rem;">Ventures Unlimited</h3>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Strategic Acquirer looking
+                            for consolidation</p>
+                        <div class="flex gap-2" style="margin-top: 8px;">
+                            <span class="badge" style="background: var(--bg-main);">Budget: $2M+</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="match-score" style="color: #ea580c;">72%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Match Score</div>
+                    <button class="btn btn-secondary">Contact</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        lucide.createIcons();
+        if (!window.dealDone.auth.getUser()) window.location.href = 'auth.html';
+        document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+    </script>
+</body>
+
+</html>
