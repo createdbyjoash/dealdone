@@ -206,6 +206,81 @@
         </div>
     </main>
 
+    <!-- Business Details Modal -->
+    <div id="business-modal"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1001; padding: var(--space-4);">
+        <div class="card animate-fade-in"
+            style="background: white; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto;">
+            <div style="padding: var(--space-8);">
+                <!-- Header -->
+                <div class="flex justify-between items-start" style="margin-bottom: var(--space-6);">
+                    <div style="flex: 1;">
+                        <span id="modal-industry" class="badge badge-primary"
+                            style="margin-bottom: var(--space-2);"></span>
+                        <h2 id="modal-name" style="margin: 0; font-size: 1.75rem;"></h2>
+                    </div>
+                    <button id="close-modal" class="btn btn-ghost" style="padding: 0.5rem;">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <!-- Owner Info -->
+                <div
+                    style="background: var(--bg-main); padding: var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-6);">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                style="width: 48px; height: 48px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.25rem;">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 2px;">Business Owner</div>
+                                <div style="font-size: 0.875rem; color: var(--text-muted);">Listed on <span
+                                        id="modal-date"></span></div>
+                            </div>
+                        </div>
+                        <button id="message-owner-btn" class="btn btn-primary">
+                            <i data-lucide="message-circle"></i> Message
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Financials -->
+                <div class="grid grid-cols-2 gap-4" style="margin-bottom: var(--space-6);">
+                    <div style="background: var(--bg-main); padding: var(--space-4); border-radius: var(--radius-md);">
+                        <div
+                            style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">
+                            Asking Price</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">$<span
+                                id="modal-valuation"></span></div>
+                    </div>
+                    <div style="background: var(--bg-main); padding: var(--space-4); border-radius: var(--radius-md);">
+                        <div
+                            style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">
+                            Annual Revenue</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">$<span id="modal-revenue"></span></div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: var(--space-6);">
+                    <h3 style="font-size: 1rem; margin-bottom: var(--space-3);">About This Business</h3>
+                    <p id="modal-description" style="color: var(--text-muted); line-height: 1.6;"></p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-4">
+                    <button class="btn btn-ghost" style="flex: 1;">
+                        <i data-lucide="heart"></i> Save
+                    </button>
+                    <button id="message-owner-btn-bottom" class="btn btn-primary" style="flex: 1;">
+                        <i data-lucide="message-circle"></i> Contact Owner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script>
@@ -286,14 +361,74 @@
                         </div>
 
                         <div style="margin-top: var(--space-6);">
-                            <button class="btn btn-primary" style="width: 100%;">View Details</button>
+                            <button class="btn btn-primary view-details-btn" data-biz-id="${biz.id}" style="width: 100%;">View Details</button>
                         </div>
                     </div>
                 </div>
             `).join('');
 
             lucide.createIcons();
+
+            // Attach click handlers to View Details buttons
+            document.querySelectorAll('.view-details-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const bizId = btn.getAttribute('data-biz-id');
+                    const business = businesses.find(b => b.id == bizId);
+                    if (business) openBusinessModal(business);
+                });
+            });
         }
+
+        // Modal Controls
+        const modal = document.getElementById('business-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const messageOwnerBtn = document.getElementById('message-owner-btn');
+        const messageOwnerBtnBottom = document.getElementById('message-owner-btn-bottom');
+
+        let currentBusinessOwnerId = null;
+
+        function openBusinessModal(business) {
+            document.getElementById('modal-name').textContent = business.name;
+            document.getElementById('modal-industry').textContent = business.industry;
+            document.getElementById('modal-valuation').textContent = Number(business.valuation).toLocaleString();
+            document.getElementById('modal-revenue').textContent = Number(business.revenue).toLocaleString();
+            document.getElementById('modal-description').textContent = business.description || 'No description provided.';
+            document.getElementById('modal-date').textContent = new Date(business.created_at).toLocaleDateString();
+
+            currentBusinessOwnerId = business.owner_id;
+
+            modal.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function closeBusinessModal() {
+            modal.style.display = 'none';
+            currentBusinessOwnerId = null;
+        }
+
+        async function messageOwner() {
+            if (!currentBusinessOwnerId) return;
+
+            // Send initial message
+            const initialMessage = "Hi, I'm interested in your business listing. Can we discuss further?";
+            await window.dealDone.db.sendMessage({
+                sender_id: user.id,
+                receiver_id: currentBusinessOwnerId,
+                content: initialMessage
+            });
+
+            // Redirect to messages page
+            window.location.href = 'buyer-messages.html';
+        }
+
+        closeModalBtn.addEventListener('click', closeBusinessModal);
+        messageOwnerBtn.addEventListener('click', messageOwner);
+        messageOwnerBtnBottom.addEventListener('click', messageOwner);
+
+        // Close modal on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeBusinessModal();
+        });
 
         // Filter Logic
         function applyFilters() {
