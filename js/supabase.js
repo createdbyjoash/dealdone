@@ -61,14 +61,8 @@ const db = {
         if (supabaseClient) {
             return await supabaseClient.from('businesses').select('*');
         } else {
-            // Mock data
-            return {
-                data: [
-                    { id: 1, name: 'CloudScale SaaS', valuation: 1200000, industry: 'Technology', description: 'Profitable SaaS for cloud optimization.', revenue: 300000 },
-                    { id: 2, name: 'EcoBrew Coffee', valuation: 450000, industry: 'Food & Beverage', description: 'Sustainable coffee chain with 5 locations.', revenue: 150000 },
-                    { id: 3, name: 'Titan Logistics', valuation: 5000000, industry: 'Logistics', description: 'Regional logistics & freight forwarder.', revenue: 2000000 }
-                ], error: null
-            };
+            console.warn('Supabase client not initialized');
+            return { data: [], error: 'Client not initialized' };
         }
     },
 
