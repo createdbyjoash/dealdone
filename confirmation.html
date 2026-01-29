@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to DealDone!</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .confirmation-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, #eff6ff 0%, transparent 40%),
+                radial-gradient(circle at bottom left, #fdf4ff 0%, transparent 40%);
+            padding: var(--space-4);
+        }
+
+        .confirmation-card {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            padding: var(--space-8);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #d1fae5;
+            color: #059669;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-6);
+        }
+
+        .checklist {
+            text-align: left;
+            margin: var(--space-8) 0;
+            background: var(--bg-main);
+            padding: var(--space-6);
+            border-radius: var(--radius-md);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: start;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
+        }
+
+        .checklist-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checklist-item i {
+            color: var(--primary);
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card card animate-fade-in">
+            <div class="success-icon">
+                <i data-lucide="check" size="40"></i>
+            </div>
+
+            <h1 style="font-family: 'Outfit'; font-size: 2rem;">You're In!</h1>
+            <p style="color: var(--text-muted);">Your DealDone account has been successfully created.</p>
+
+            <div class="checklist">
+                <h4 style="font-size: 1rem; margin-bottom: var(--space-4);">Next Steps:</h4>
+                <div class="checklist-item" id="step-1">
+                    <i data-lucide="circle-check"></i>
+                    <span>Verify your email (optional for now)</span>
+                </div>
+                <div class="checklist-item" id="step-2">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Access your dashboard</span>
+                </div>
+                <div class="checklist-item" id="step-3">
+                    <i data-lucide="rocket"></i>
+                    <span id="action-text">List your business</span>
+                </div>
+            </div>
+
+            <button id="continue-btn" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                Continue to Dashboard <i data-lucide="arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Determine user type from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type') || 'owner';
+
+        // Customize text based on type
+        if (type === 'buyer') {
+            document.getElementById('action-text').textContent = "Browse investment opportunities";
+        } else {
+            document.getElementById('action-text').textContent = "List your business for sale";
+        }
+
+        // Handle redirect
+        document.getElementById('continue-btn').addEventListener('click', () => {
+            if (type === 'owner') {
+                window.location.href = 'owner-dashboard.html';
+            } else {
+                window.location.href = 'buyer-dashboard.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

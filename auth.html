@@ -222,7 +222,7 @@
                     if (error) throw error;
 
                     alert('Registration successful! Redirecting...');
-                    window.location.href = selectedType === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
+                    window.location.href = `confirmation.html?type=${selectedType}`;
                 }
             } catch (err) {
                 alert('Authentication error: ' + err.message);
