@@ -8,10 +8,10 @@ const SUPABASE_URL = 'https://eubdhvpgaksyhsjqjcbk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1YmRodnBnYWtzeWhzanFqY2JrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MzIxNTMsImV4cCI6MjA4NTAwODE1M30.PqP5giE9XqjO9FIeD1raHye8vqkRGPZjp3lecbSQJBw';
 
 // Mock Supabase Client if not configured
-let supabase = null;
+let supabaseClient = null;
 
-if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof supabasejs !== 'undefined') {
-    supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (SUPABASE_URL && SUPABASE_ANON_KEY && typeof window.supabase !== 'undefined') {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
 /**
@@ -50,7 +50,7 @@ const mockAuth = {
     }
 };
 
-const auth = supabase ? supabase.auth : mockAuth;
+const auth = supabaseClient ? supabaseClient.auth : mockAuth;
 
 /**
  * Common Data Access Methods
@@ -58,8 +58,8 @@ const auth = supabase ? supabase.auth : mockAuth;
 const db = {
     // Businesses
     getBusinesses: async () => {
-        if (supabase) {
-            return await supabase.from('businesses').select('*');
+        if (supabaseClient) {
+            return await supabaseClient.from('businesses').select('*');
         } else {
             // Mock data
             return {
@@ -74,21 +74,21 @@ const db = {
 
     // Save business profile
     saveBusiness: async (businessData) => {
-        if (supabase) {
+        if (supabaseClient) {
             // Check if business exists for this owner
-            const { data: existing } = await supabase
+            const { data: existing } = await supabaseClient
                 .from('businesses')
                 .select('id')
                 .eq('owner_id', businessData.owner_id)
                 .single();
 
             if (existing) {
-                return await supabase
+                return await supabaseClient
                     .from('businesses')
                     .update(businessData)
                     .eq('id', existing.id);
             } else {
-                return await supabase
+                return await supabaseClient
                     .from('businesses')
                     .insert([businessData]);
             }
@@ -101,7 +101,7 @@ const db = {
 
 // Export to window for global access in this simple architecture
 window.dealDone = {
-    supabase,
+    supabase: supabaseClient,
     auth,
     db,
     configureSupabase
