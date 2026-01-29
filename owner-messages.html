@@ -162,70 +162,51 @@
             <div class="chat-header">
                 <h2 style="font-size: 1.25rem; margin: 0;">Inbox</h2>
             </div>
-            <div class="chat-list">
-                <div class="chat-item active">
-                    <div class="flex justify-between" style="margin-bottom: 4px;">
-                        <span style="font-weight: 600;">Private Equity Group A</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">2m ago</span>
-                    </div>
-                    <p
-                        style="margin: 0; font-size: 0.875rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        Sounds good! Let's schedule a call for...
-                    </p>
-                </div>
-                <div class="chat-item">
-                    <div class="flex justify-between" style="margin-bottom: 4px;">
-                        <span style="font-weight: 600;">System Notification</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">1d ago</span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.875rem; color: var(--text-muted);">
-                        Your listing has been approved.
-                    </p>
-                </div>
+            <div class="chat-list" id="conversation-list">
+                <!-- Conversations load here -->
             </div>
         </div>
 
-        <div class="chat-window">
-            <div class="chat-header flex justify-between items-center" style="background: white;">
-                <div class="flex items-center gap-3">
-                    <div
-                        style="width: 40px; height: 40px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 600;">
-                        PE</div>
-                    <div>
-                        <h3 style="margin: 0; font-size: 1rem;">Private Equity Group A</h3>
-                        <div class="flex items-center gap-1" style="font-size: 0.75rem; color: var(--success);">
-                            <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
-                            Online
+        <div class="chat-window" id="chat-window-container">
+            <!-- Empty State -->
+            <div id="empty-chat-state" class="flex flex-col items-center justify-center h-full"
+                style="text-align: center; color: var(--text-muted); padding: var(--space-8); height: 100%;">
+                <div
+                    style="width: 64px; height: 64px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+                    <i data-lucide="message-square-off" size="32"></i>
+                </div>
+                <h3>No Messages Yet</h3>
+                <p>Select a buyer from the "Potential Buyers" tab to start a conversation.</p>
+            </div>
+
+            <!-- Chat Interface (Hidden by default) -->
+            <div id="active-chat-interface" style="display: none; flex-direction: column; height: 100%;">
+                <div class="chat-header flex justify-between items-center" style="background: white;">
+                    <div class="flex items-center gap-3">
+                        <div
+                            style="width: 40px; height: 40px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 600;">
+                            <i data-lucide="user"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1rem;" id="chat-partner-name">User</h3>
+                            <div class="flex items-center gap-1" style="font-size: 0.75rem; color: var(--success);">
+                                <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;">
+                                </div> Online
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-ghost"><i data-lucide="more-horizontal"></i></button>
-            </div>
 
-            <div class="message-area">
-                <div class="msg msg-in">
-                    Hi there, we reviewed your listing for "Acme SaaS" and are very interested. Is it still available?
+                <div class="message-area" id="message-feed">
+                    <!-- Messages load here -->
                 </div>
-                <div class="msg msg-out">
-                    Hello! Yes, it is. I'm currently reviewing initial offers.
-                </div>
-                <div class="msg msg-in">
-                    Great. We'd like to move fast. Our budget fits your valuation. When are you free for a quick intro
-                    call?
-                </div>
-                <div class="msg msg-out">
-                    I'm free tomorrow afternoon. Does 2 PM work for you?
-                </div>
-                <div class="msg msg-in">
-                    Sounds good! Let's schedule a call for then.
-                </div>
-            </div>
 
-            <div class="input-area">
-                <button class="btn btn-ghost" style="padding: 0.5rem;"><i data-lucide="paperclip"></i></button>
-                <input type="text" class="form-input" placeholder="Type a message..."
-                    style="border: none; background: #f1f5f9;">
-                <button class="btn btn-primary" style="padding: 0.5rem 1rem;"><i data-lucide="send"></i></button>
+                <div class="input-area">
+                    <input type="text" id="message-input" class="form-input" placeholder="Type a message..."
+                        style="border: none; background: #f1f5f9; flex: 1;">
+                    <button class="btn btn-primary" id="send-msg-btn" style="padding: 0.5rem 1rem;"><i
+                            data-lucide="send"></i></button>
+                </div>
             </div>
         </div>
     </main>
@@ -233,8 +214,130 @@
     <script src="js/supabase.js"></script>
     <script>
         lucide.createIcons();
-        if (!window.dealDone.auth.getUser()) window.location.href = 'auth.html';
+
+        const user = window.dealDone.auth.getUser();
+        if (!user) window.location.href = 'auth.html';
+
         document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+
+        const conversationList = document.getElementById('conversation-list');
+        const emptyState = document.getElementById('empty-chat-state');
+        const activeInterface = document.getElementById('active-chat-interface');
+        const messageFeed = document.getElementById('message-feed');
+        const chatPartnerName = document.getElementById('chat-partner-name');
+        const msgInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-msg-btn');
+
+        let allMessages = [];
+        let currentPartnerId = null;
+
+        async function loadMessages() {
+            const { data, error } = await window.dealDone.db.getMessages(user.id);
+            if (error || !data) return;
+
+            allMessages = data;
+            renderConversations();
+        }
+
+        function renderConversations() {
+            conversationList.innerHTML = '';
+
+            // Group messages by partner
+            const conversations = {};
+            allMessages.forEach(msg => {
+                const partnerId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
+                if (!conversations[partnerId]) {
+                    conversations[partnerId] = {
+                        id: partnerId,
+                        lastMessage: msg,
+                        name: 'User ' + partnerId.substr(0, 4) // Simplified name for now
+                    };
+                }
+                // Keep keeping track of latest message
+                if (new Date(msg.created_at) > new Date(conversations[partnerId].lastMessage.created_at)) {
+                    conversations[partnerId].lastMessage = msg;
+                }
+            });
+
+            const partners = Object.values(conversations);
+
+            if (partners.length === 0) {
+                // No conversations at all
+                emptyState.style.display = 'flex';
+                activeInterface.style.display = 'none';
+                return;
+            }
+
+            // If we have conversations, hide global empty state (unless no chat selected)
+            // But we actually want to show the list.
+
+            partners.forEach(partner => {
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                if (currentPartnerId === partner.id) item.classList.add('active');
+
+                item.innerHTML = `
+                    <div class="flex justify-between" style="margin-bottom: 4px;">
+                        <span style="font-weight: 600;">${partner.name}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(partner.lastMessage.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.875rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${partner.lastMessage.content}
+                    </p>
+                `;
+                item.addEventListener('click', () => openChat(partner.id, partner.name));
+                conversationList.appendChild(item);
+            });
+        }
+
+        function openChat(partnerId, partnerName) {
+            currentPartnerId = partnerId;
+            chatPartnerName.textContent = partnerName;
+
+            emptyState.style.display = 'none';
+            activeInterface.style.display = 'flex';
+
+            // Re-render list to update 'active' class
+            renderConversations();
+
+            // Filter and Render Messages
+            messageFeed.innerHTML = '';
+            const chatMsgs = allMessages.filter(m =>
+                (m.sender_id === user.id && m.receiver_id === partnerId) ||
+                (m.sender_id === partnerId && m.receiver_id === user.id)
+            );
+
+            chatMsgs.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `msg ${msg.sender_id === user.id ? 'msg-out' : 'msg-in'}`;
+                div.textContent = msg.content;
+                messageFeed.appendChild(div);
+            });
+
+            // Scroll to bottom
+            messageFeed.scrollTop = messageFeed.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', async () => {
+            if (!currentPartnerId || !msgInput.value.trim()) return;
+
+            const content = msgInput.value;
+            msgInput.value = ''; // Clear early using optimistic UI pattern could be better but keeping simple
+
+            const { error } = await window.dealDone.db.sendMessage({
+                sender_id: user.id,
+                receiver_id: currentPartnerId,
+                content: content
+            });
+
+            if (!error) {
+                // Reload to show new message
+                await loadMessages();
+                openChat(currentPartnerId, chatPartnerName.textContent);
+            }
+        });
+
+        loadMessages();
     </script>
 </body>
 

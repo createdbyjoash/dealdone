@@ -90,6 +90,25 @@ const db = {
             console.log('Mock Save Business:', businessData);
             return { data: businessData, error: null };
         }
+    },
+
+    // Messages
+    getMessages: async (userId) => {
+        if (supabaseClient) {
+            return await supabaseClient
+                .from('messages')
+                .select('*')
+                .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+                .order('created_at', { ascending: true });
+        }
+        return { data: [], error: 'No client' };
+    },
+
+    sendMessage: async (msgData) => {
+        if (supabaseClient) {
+            return await supabaseClient.from('messages').insert([msgData]);
+        }
+        return { error: 'No client' };
     }
 };
 
