@@ -216,8 +216,10 @@
                 } else {
                     const fullName = document.getElementById('full_name').value;
                     const { data, error } = await window.dealDone.auth.signUp(email, password, {
-                        full_name: fullName,
-                        type: selectedType
+                        data: {
+                            full_name: fullName,
+                            type: selectedType
+                        }
                     });
                     if (error) throw error;
 
