@@ -75,7 +75,23 @@ const db = {
     // Save business profile
     saveBusiness: async (businessData) => {
         if (supabase) {
-            return await supabase.from('businesses').insert([businessData]);
+            // Check if business exists for this owner
+            const { data: existing } = await supabase
+                .from('businesses')
+                .select('id')
+                .eq('owner_id', businessData.owner_id)
+                .single();
+
+            if (existing) {
+                return await supabase
+                    .from('businesses')
+                    .update(businessData)
+                    .eq('id', existing.id);
+            } else {
+                return await supabase
+                    .from('businesses')
+                    .insert([businessData]);
+            }
         } else {
             console.log('Mock Save Business:', businessData);
             return { data: businessData, error: null };
