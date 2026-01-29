@@ -50,7 +50,43 @@ const mockAuth = {
     }
 };
 
-const auth = supabaseClient ? supabaseClient.auth : mockAuth;
+// Create auth wrapper that works with both Supabase and mock
+const auth = {
+    signUp: async (options) => {
+        if (supabaseClient) {
+            return await supabaseClient.auth.signUp(options);
+        }
+        return mockAuth.signUp(options.email, options.password, options.options?.data);
+    },
+
+    signInWithPassword: async (credentials) => {
+        if (supabaseClient) {
+            return await supabaseClient.auth.signInWithPassword(credentials);
+        }
+        return mockAuth.signIn(credentials.email, credentials.password);
+    },
+
+    signOut: async () => {
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
+        localStorage.removeItem('dealDoneUser');
+        window.location.href = 'index.html';
+    },
+
+    getUser: () => {
+        if (supabaseClient) {
+            // Try to get from Supabase session first
+            const session = supabaseClient.auth.getSession();
+            if (session) {
+                return session.user;
+            }
+        }
+        // Fallback to localStorage
+        const user = localStorage.getItem('dealDoneUser');
+        return user ? JSON.parse(user) : null;
+    }
+};
 
 /**
  * Common Data Access Methods
