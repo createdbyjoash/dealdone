@@ -22,7 +22,7 @@
     --bg-surface: #ffffff;
     --bg-glass: rgba(255, 255, 255, 0.7);
     --bg-glass-dark: rgba(255, 255, 255, 0.4);
-    
+
     --text-main: #0f172a;
     --text-muted: #64748b;
     --text-light: #94a3b8;
@@ -36,15 +36,31 @@
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-display: 'Outfit', sans-serif;
 
-    /* Spacing */
+    /* Spacing - Optimized for breathing room */
     --space-1: 0.25rem;
+    /* 4px */
     --space-2: 0.5rem;
+    /* 8px */
     --space-3: 0.75rem;
+    /* 12px */
     --space-4: 1rem;
+    /* 16px */
+    --space-5: 1.25rem;
+    /* 20px */
     --space-6: 1.5rem;
+    /* 24px */
     --space-8: 2rem;
+    /* 32px */
+    --space-10: 2.5rem;
+    /* 40px */
     --space-12: 3rem;
+    /* 48px */
     --space-16: 4rem;
+    /* 64px */
+    --space-20: 5rem;
+    /* 80px */
+    --space-24: 6rem;
+    /* 96px */
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -144,7 +160,72 @@ p {
 }
 
 .justify-center {
-    justify-content: center;
+    justify-content: center !important;
+}
+
+/* Margin & Padding Utilities */
+.m-0 {
+    margin: 0 !important;
+}
+
+.mt-4 {
+    margin-top: var(--space-4) !important;
+}
+
+.mt-8 {
+    margin-top: var(--space-8) !important;
+}
+
+.mb-2 {
+    margin-bottom: var(--space-2) !important;
+}
+
+.mb-4 {
+    margin-bottom: var(--space-4) !important;
+}
+
+.mb-6 {
+    margin-bottom: var(--space-6) !important;
+}
+
+.mb-8 {
+    margin-bottom: var(--space-8) !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.p-4 {
+    padding: var(--space-4) !important;
+}
+
+.p-6 {
+    padding: var(--space-6) !important;
+}
+
+.p-8 {
+    padding: var(--space-8) !important;
+}
+
+.py-4 {
+    padding-top: var(--space-4) !important;
+    padding-bottom: var(--space-4) !important;
+}
+
+.py-8 {
+    padding-top: var(--space-8) !important;
+    padding-bottom: var(--space-8) !important;
+}
+
+.px-4 {
+    padding-left: var(--space-4) !important;
+    padding-right: var(--space-4) !important;
+}
+
+.px-6 {
+    padding-left: var(--space-6) !important;
+    padding-right: var(--space-6) !important;
 }
 
 .gap-2 {
@@ -184,7 +265,7 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 1.75rem;
     font-weight: 600;
     border-radius: var(--radius-md);
     transition: all 0.2s ease;
@@ -228,12 +309,12 @@ p {
 
 /* Cards */
 .card {
-    background-color: var(--bg-surface);
+    background: var(--bg-surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    padding: var(--space-6);
+    padding: var(--space-8);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover {
@@ -297,6 +378,7 @@ p {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -304,8 +386,13 @@ p {
 }
 
 @keyframes shimmer {
-    0% { background-position: -468px 0; }
-    100% { background-position: 468px 0; }
+    0% {
+        background-position: -468px 0;
+    }
+
+    100% {
+        background-position: 468px 0;
+    }
 }
 
 .animate-fade-in {
@@ -324,7 +411,9 @@ p {
     border-radius: var(--radius-sm);
 }
 
-.skeleton-circle { border-radius: 50%; }
+.skeleton-circle {
+    border-radius: 50%;
+}
 
 /* Milestone Tracker */
 .milestone-container {
