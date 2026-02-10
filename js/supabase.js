@@ -141,11 +141,11 @@ const db = {
     // Get business by owner ID
     getBusinessByOwner: async (ownerId) => {
         if (supabaseClient) {
-            return await supabaseClient
+            const { data, error } = await supabaseClient
                 .from('businesses')
                 .select('*')
-                .eq('owner_id', ownerId)
-                .single();
+                .eq('owner_id', ownerId);
+            return { data: data ? data[0] : null, error };
         } else {
             const businesses = mockAuth.getMockBusinesses();
             const data = businesses.find(b => b.owner_id === ownerId);
@@ -159,11 +159,12 @@ const db = {
             console.log('Supabase: Attempting to save business', businessData);
 
             // 1. Ensure profile exists (Supabase trigger usually handles this, but let's be sure)
-            const { data: profile, error: profileError } = await supabaseClient
+            const { data: profiles, error: profileError } = await supabaseClient
                 .from('profiles')
                 .select('id')
-                .eq('id', businessData.owner_id)
-                .maybeSingle();
+                .eq('id', businessData.owner_id);
+
+            const profile = profiles && profiles.length > 0 ? profiles[0] : null;
 
             if (!profile) {
                 console.warn('Profile not found, attempting to create one...');
@@ -178,16 +179,17 @@ const db = {
             }
 
             // 2. Check for existing business
-            const { data: existing, error: fetchError } = await supabaseClient
+            const { data: results, error: fetchError } = await supabaseClient
                 .from('businesses')
                 .select('id')
-                .eq('owner_id', businessData.owner_id)
-                .maybeSingle();
+                .eq('owner_id', businessData.owner_id);
 
             if (fetchError) {
                 console.error('Fetch Error:', fetchError);
                 return { data: null, error: fetchError };
             }
+
+            const existing = results && results.length > 0 ? results[0] : null;
 
             if (existing) {
                 console.log('Supabase: Updating business', existing.id);
@@ -202,11 +204,10 @@ const db = {
                         updated_at: new Date().toISOString()
                     })
                     .eq('id', existing.id)
-                    .select()
-                    .single();
+                    .select();
 
                 if (error) console.error('Update Error:', error);
-                return { data, error };
+                return { data: data ? data[0] : null, error };
             } else {
                 console.log('Supabase: Inserting new business');
                 const { data, error } = await supabaseClient
@@ -215,11 +216,10 @@ const db = {
                         ...businessData,
                         is_active: true
                     }])
-                    .select()
-                    .single();
+                    .select();
 
                 if (error) console.error('Insert Error:', error);
-                return { data, error };
+                return { data: data ? data[0] : null, error };
             }
         } else {
             console.log('Mock: Saving business', businessData);
