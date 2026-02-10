@@ -195,6 +195,9 @@
             <button id="apply-filters" class="btn btn-primary" style="height: 48px;">
                 Filter
             </button>
+            <button id="save-search" class="btn btn-secondary" style="height: 48px;">
+                <i data-lucide="bell"></i> Alert Me
+            </button>
         </div>
 
         <!-- Business Grid -->
@@ -269,6 +272,46 @@
                     <p id="modal-description" style="color: var(--text-muted); line-height: 1.6;"></p>
                 </div>
 
+                <!-- Secure Data Room (Buyer View) -->
+                <div
+                    style="margin-bottom: var(--space-8); border-top: 1px solid var(--border); padding-top: var(--space-6);">
+                    <div class="flex justify-between items-center" style="margin-bottom: var(--space-4);">
+                        <h3 style="font-size: 1rem; margin: 0;">Secure Data Room</h3>
+                        <div class="badge badge-primary"><i data-lucide="lock" size="12" style="margin-right: 4px;"></i>
+                            Protected</div>
+                    </div>
+
+                    <div id="data-room-locked"
+                        style="background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-6); text-align: center;">
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: var(--space-4);">
+                            Detailed financials and operations manuals are restricted.</p>
+                        <button id="request-access-btn" class="btn btn-secondary btn-sm" style="font-size: 0.875rem;">
+                            <i data-lucide="file-signature" size="16"></i> Request Access (Sign NDA)
+                        </button>
+                    </div>
+
+                    <div id="data-room-unlocked" style="display: none;">
+                        <div class="flex flex-col gap-2">
+                            <a href="#" class="flex items-center justify-between p-3"
+                                style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; color: inherit;">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="file-text" size="20" style="color: var(--primary);"></i>
+                                    <span style="font-size: 0.875rem; font-weight: 500;">2024_tax_returns.pdf</span>
+                                </div>
+                                <i data-lucide="download" size="16" style="color: var(--text-muted);"></i>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3"
+                                style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; color: inherit;">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="file-text" size="20" style="color: var(--primary);"></i>
+                                    <span style="font-size: 0.875rem; font-weight: 500;">operations_manual_v2.pdf</span>
+                                </div>
+                                <i data-lucide="download" size="16" style="color: var(--text-muted);"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Actions -->
                 <div class="flex gap-4">
                     <button class="btn btn-ghost" style="flex: 1;">
@@ -278,6 +321,38 @@
                         <i data-lucide="message-circle"></i> Contact Owner
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- NDA Modal -->
+    <div id="nda-modal"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1002; padding: var(--space-4);">
+        <div class="card animate-fade-in"
+            style="background: white; width: 100%; max-width: 500px; padding: var(--space-8);">
+            <div style="text-align: center; margin-bottom: var(--space-6);">
+                <div
+                    style="background: var(--primary-light); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4);">
+                    <i data-lucide="file-signature" color="var(--primary)"></i>
+                </div>
+                <h2 style="font-family: 'Outfit';">Sign Digital NDA</h2>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">To access the Secure Data Room, you must agree
+                    to keep all information confidential.</p>
+            </div>
+
+            <div
+                style="background: var(--bg-main); padding: var(--space-4); border-radius: var(--radius-md); font-size: 0.75rem; line-height: 1.6; max-height: 150px; overflow-y: auto; margin-bottom: var(--space-6); border: 1px solid var(--border);">
+                <strong>Confidentiality Agreement</strong><br>
+                1. The recipient agrees not to disclose any financial or operational details of the business to third
+                parties.<br>
+                2. All data provided is for the sole purpose of evaluating a potential acquisition.<br>
+                3. This agreement is legally binding for a period of 24 months.
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <button id="confirm-nda-btn" class="btn btn-primary" style="width: 100%;">I Agree & Sign</button>
+                <button id="close-nda-btn" class="btn btn-ghost" style="width: 100%;">Cancel</button>
             </div>
         </div>
     </div>
@@ -399,6 +474,10 @@
 
             currentBusinessOwnerId = business.owner_id;
 
+            // Reset Data Room state
+            document.getElementById('data-room-locked').style.display = 'block';
+            document.getElementById('data-room-unlocked').style.display = 'none';
+
             modal.style.display = 'flex';
             lucide.createIcons();
         }
@@ -462,6 +541,33 @@
 
         // Initialize
         loadBusinesses();
+
+        // NDA Logic
+        const ndaModal = document.getElementById('nda-modal');
+        const openNdaBtn = document.getElementById('request-access-btn');
+        const confirmNdaBtn = document.getElementById('confirm-nda-btn');
+        const closeNdaBtn = document.getElementById('close-nda-btn');
+
+        openNdaBtn.addEventListener('click', () => { ndaModal.style.display = 'flex'; lucide.createIcons(); });
+        closeNdaBtn.addEventListener('click', () => { ndaModal.style.display = 'none'; });
+        confirmNdaBtn.addEventListener('click', () => {
+            alert('NDA Signed Strategy: Information now decrypted.');
+            document.getElementById('data-room-locked').style.display = 'none';
+            document.getElementById('data-room-unlocked').style.display = 'block';
+            ndaModal.style.display = 'none';
+            lucide.createIcons();
+        });
+
+        // Save Search Alert Logic
+        const saveSearchBtn = document.getElementById('save-search');
+        saveSearchBtn.addEventListener('click', () => {
+            const industry = filterIndustry.value || 'All Industries';
+            const price = filterPrice.value || 'No Limit';
+
+            alert(`Search Saved!\nWe will alert you when new listings match:\n- Industry: ${industry}\n- Max Price: $${price}`);
+
+            // In a real app, this would sync to a 'saved_searches' table in Supabase
+        });
 
         // Initialize notifications
         if (window.dealDoneNotifications) {

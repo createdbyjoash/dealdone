@@ -64,7 +64,7 @@
         </div>
 
         <nav style="flex: 1;">
-            <a href="buyer-dashboard.html" class="nav-link"><i data-lucide="search"></i> Browse Businesses</a>
+            <a href="dashboard.html" class="nav-link"><i data-lucide="search"></i> Browse Businesses</a>
             <a href="buyer-saved.html" class="nav-link"><i data-lucide="bookmark"></i> Saved</a>
             <a href="buyer-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
             <a href="buyer-preferences.html" class="nav-link active"><i data-lucide="settings"></i> Preferences</a>
@@ -147,6 +147,44 @@
                 </form>
             </div>
 
+            <!-- Proof of Funds Verification -->
+            <div class="card">
+                <div class="flex justify-between items-start" style="margin-bottom: var(--space-6);">
+                    <div>
+                        <h3 style="margin-bottom: var(--space-1);">Proof of Funds (PoF)</h3>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Increase trust with sellers
+                            by verifying your liquidity.</p>
+                    </div>
+                    <div id="pof-status" class="badge" style="background: var(--bg-main); color: var(--text-muted);">
+                        Unverified</div>
+                </div>
+
+                <div id="pof-unverified-ui">
+                    <div
+                        style="background: #f8fafc; border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: var(--space-8); text-align: center;">
+                        <i data-lucide="file-up" size="32"
+                            style="margin-bottom: var(--space-4); color: var(--primary);"></i>
+                        <p style="font-weight: 500; margin-bottom: var(--space-2);">Upload PoF Document</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: var(--space-6);">Supports
+                            PDF, JPG (Bank statements or Accountant letters)</p>
+                        <input type="file" id="pof-upload" style="display: none;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('pof-upload').click()">Select
+                            File</button>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: var(--space-4);">
+                        <i data-lucide="shield-check" size="12" style="vertical-align: middle; margin-right: 4px;"></i>
+                        Your data is encrypted and only shared with owners after you sign an NDA.
+                    </p>
+                </div>
+
+                <div id="pof-pending-ui" style="display: none; text-align: center; padding: var(--space-6);">
+                    <div style="color: var(--warning); margin-bottom: var(--space-2); font-weight: 600;">Verification
+                        Pending</div>
+                    <p style="font-size: 0.875rem; color: var(--text-muted);">Our team is reviewing your documentation.
+                        This usually takes 24-48 hours.</p>
+                </div>
+            </div>
+
             <!-- Notifications -->
             <div class="card">
                 <h3 style="margin-bottom: var(--space-6);">Notifications</h3>
@@ -200,6 +238,25 @@
         document.getElementById('criteria-form').addEventListener('submit', (e) => {
             e.preventDefault();
             alert('Investment criteria saved!');
+        });
+
+        // PoF Logic
+        const pofUpload = document.getElementById('pof-upload');
+        const pofStatus = document.getElementById('pof-status');
+        const unverifiedUi = document.getElementById('pof-unverified-ui');
+        const pendingUi = document.getElementById('pof-pending-ui');
+
+        pofUpload.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                // Mock upload process
+                pofStatus.textContent = 'Pending';
+                pofStatus.style.background = '#fef3c7';
+                pofStatus.style.color = '#92400e';
+                unverifiedUi.style.display = 'none';
+                pendingUi.style.display = 'block';
+
+                alert('Document uploaded! Our team will verify it shortly.');
+            }
         });
     </script>
 </body>

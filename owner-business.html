@@ -81,6 +81,37 @@
             font-weight: 500;
             color: var(--text-main);
         }
+
+        /* Valuation Calculator Styles */
+        .calc-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+            color: white;
+            padding: var(--space-8);
+            border-radius: var(--radius-xl);
+            margin-top: var(--space-8);
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            margin: var(--space-4) 0;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -94,7 +125,7 @@
         </div>
 
         <nav style="flex: 1;">
-            <a href="owner-dashboard.html" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="dashboard.html" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="owner-business.html" class="nav-link active"><i data-lucide="briefcase"></i> My Business</a>
             <a href="owner-buyers.html" class="nav-link"><i data-lucide="users"></i> Potential Buyers</a>
             <a href="owner-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
@@ -156,6 +187,98 @@
                         <div class="info-group">
                             <div class="info-label">Description / Pitch</div>
                             <p id="display-desc" style="line-height: 1.6;">No description provided.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Valuation Calculator -->
+            <div class="calc-card animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-6);">
+                    <div>
+                        <h3 style="margin: 0; font-family: 'Outfit'; color: white;">Valuation Estimator</h3>
+                        <p style="margin: 0; opacity: 0.8; font-size: 0.875rem;">See how your business value changes
+                            with market multiples.</p>
+                    </div>
+                    <i data-lucide="calculator" size="32"></i>
+                </div>
+
+                <div class="grid grid-cols-2 gap-12">
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label" style="color: white; opacity: 0.9;">Revenue Multiple (x)</label>
+                            <input type="range" id="multiple-slider" class="range-slider" min="1" max="10" step="0.5"
+                                value="3.5">
+                            <div class="flex justify-between" style="font-size: 0.75rem; font-weight: 600;">
+                                <span>1x</span>
+                                <span id="multiple-value" style="font-size: 1.25rem; color: #fbbf24;">3.5x</span>
+                                <span>10x</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="info-label" style="color: white; opacity: 0.8;">Estimated Business Value</div>
+                        <div id="estimated-value"
+                            style="font-size: 2.5rem; font-weight: 700; font-family: 'Outfit'; color: #fbbf24;">$0</div>
+                        <button class="btn"
+                            style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); margin-top: var(--space-4); font-size: 0.875rem;"
+                            onclick="updateAskingPrice()">
+                            Use as Asking Price
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secure Data Room -->
+            <div class="card animate-fade-in" style="margin-top: var(--space-8); animation-delay: 0.3s;">
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-6);">
+                    <div>
+                        <h3 style="margin: 0; font-family: 'Outfit';">Secure Data Room</h3>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Manage sensitive documents
+                            that require an NDA to view.</p>
+                    </div>
+                    <div class="badge badge-success" style="background: #ecfdf5; color: #065f46;">
+                        <i data-lucide="shield" size="14" style="margin-right: 4px;"></i> Encryption On
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div
+                        style="background: var(--bg-main); border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: var(--space-8); text-align: center;">
+                        <i data-lucide="file-plus" size="32"
+                            style="margin-bottom: var(--space-4); color: var(--primary);"></i>
+                        <p style="font-weight: 500; margin-bottom: var(--space-2);">Upload Confidential File</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: var(--space-4);">Upload
+                            P&Ls, Tax Returns, or Staffing Lists</p>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Select
+                            File</button>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between p-3"
+                            style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" size="20" style="color: #64748b;"></i>
+                                <div>
+                                    <div style="font-size: 0.875rem; font-weight: 600;">2024_tax_returns.pdf</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Shared with 3 verified
+                                        buyers</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-ghost" style="padding: 4px;"><i data-lucide="trash-2"
+                                    size="16"></i></button>
+                        </div>
+                        <div class="flex items-center justify-between p-3"
+                            style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" size="20" style="color: #64748b;"></i>
+                                <div>
+                                    <div style="font-size: 0.875rem; font-weight: 600;">operations_manual_v2.pdf</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Requires signed NDA</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-ghost" style="padding: 4px;"><i data-lucide="trash-2"
+                                    size="16"></i></button>
                         </div>
                     </div>
                 </div>
@@ -285,6 +408,10 @@
             document.getElementById('biz-revenue').value = data.revenue;
             document.getElementById('biz-valuation').value = data.valuation;
             document.getElementById('biz-desc').value = data.description;
+
+            // Update calculator state
+            currentRevenue = Number(data.revenue) || 0;
+            calculateValuation();
         }
 
         // Modal Logic
@@ -310,6 +437,41 @@
             await loadBusiness(); // Refresh
             closeModal();
         });
+
+        // Simple Valuation Calculator Logic
+        const multipleSlider = document.getElementById('multiple-slider');
+        const multipleValue = document.getElementById('multiple-value');
+        const estimatedValue = document.getElementById('estimated-value');
+        let currentRevenue = 0;
+
+        function calculateValuation() {
+            const multiple = parseFloat(multipleSlider.value);
+            multipleValue.textContent = multiple + 'x';
+            const estimate = currentRevenue * multiple;
+            estimatedValue.textContent = '$' + Math.round(estimate).toLocaleString();
+        }
+
+        multipleSlider.addEventListener('input', calculateValuation);
+
+        async function updateAskingPrice() {
+            const multiple = parseFloat(multipleSlider.value);
+            const estimate = Math.round(currentRevenue * multiple);
+
+            const confirmed = confirm(`Update your asking price to $${estimate.toLocaleString()}?`);
+            if (confirmed) {
+                const { data: currentBiz } = await window.dealDone.supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('owner_id', user.id)
+                    .single();
+
+                if (currentBiz) {
+                    currentBiz.valuation = estimate;
+                    await window.dealDone.db.saveBusiness(currentBiz);
+                    await loadBusiness();
+                }
+            }
+        }
 
         loadBusiness();
     </script>

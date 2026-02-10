@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | DealDone</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .sidebar {
+            width: 280px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-glass);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-8) var(--space-4);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-8);
+            min-height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: var(--space-1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Role Switcher */
+        .role-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .role-owner {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .role-buyer {
+            background: #f0fdf4;
+            color: #166534;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="flex items-center gap-2" style="margin-bottom: var(--space-12); padding: 0 var(--space-4);">
+            <div style="background: var(--primary); color: white; padding: 4px; border-radius: 8px;">
+                <i data-lucide="handshake"></i>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; font-family: 'Outfit';">DealDone</span>
+        </div>
+
+        <nav id="sidebar-nav" style="flex: 1;">
+            <!-- Nav items injected by JS -->
+        </nav>
+
+        <div style="padding: var(--space-4); border-top: 1px solid var(--border);">
+            <div class="flex items-center gap-3" style="margin-bottom: var(--space-4);">
+                <div id="user-avatar"
+                    style="width: 32px; height: 32px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem;">
+                    U
+                </div>
+                <div style="overflow: hidden;">
+                    <div id="user-name-display"
+                        style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        User Name</div>
+                    <div id="user-role-display" style="font-size: 0.75rem; color: var(--text-muted);">Role</div>
+                </div>
+            </div>
+            <button id="logout-btn" class="nav-link"
+                style="border: none; background: none; width: 100%; cursor: pointer;">
+                <i data-lucide="log-out"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <main class="main-content" id="dashboard-main">
+        <!-- Dashboard Content injected by JS -->
+        <div class="flex items-center justify-center h-full">
+            <i data-lucide="loader" class="animate-spin" size="48"></i>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/notifications.js"></script>
+    <script>
+        const user = window.dealDone.auth.getUser();
+        // if (!user) window.location.href = 'auth.html'; // Redirection removed per user request
+
+        const role = user?.user_metadata?.type || 'owner';
+        const userName = user?.user_metadata?.full_name || 'User';
+
+        // Initialize UI
+        document.getElementById('user-name-display').textContent = userName;
+        document.getElementById('user-role-display').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+        document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
+
+        const nav = document.getElementById('sidebar-nav');
+        const main = document.getElementById('dashboard-main');
+
+        function renderSidebar() {
+            if (role === 'owner') {
+                nav.innerHTML = `
+                    <a href="dashboard.html" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                    <a href="owner-business.html" class="nav-link"><i data-lucide="briefcase"></i> My Business</a>
+                    <a href="owner-buyers.html" class="nav-link"><i data-lucide="users"></i> Potential Buyers</a>
+                    <a href="owner-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+                    <a href="owner-settings.html" class="nav-link"><i data-lucide="settings"></i> Settings</a>
+                `;
+            } else {
+                nav.innerHTML = `
+                    <a href="dashboard.html" class="nav-link active"><i data-lucide="search"></i> Browse Businesses</a>
+                    <a href="buyer-saved.html" class="nav-link"><i data-lucide="bookmark"></i> Saved</a>
+                    <a href="buyer-messages.html" class="nav-link"><i data-lucide="message-circle"></i> Messages</a>
+                    <a href="buyer-preferences.html" class="nav-link"><i data-lucide="settings"></i> Preferences</a>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        async function loadView() {
+            if (role === 'owner') {
+                main.innerHTML = `
+                    <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+                        <div>
+                            <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1); font-family: 'Outfit';">Owner Dashboard</h1>
+                            <p style="color: var(--text-muted);">Manage your business listing and engage with buyers.</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button class="btn btn-secondary"><i data-lucide="bell"></i></button>
+                            <button class="btn btn-primary" id="list-business-btn"><i data-lucide="plus"></i> Add Listing</button>
+                        </div>
+                    </header>
+                    <div class="grid grid-cols-3 gap-6" id="stats-grid">
+                        <div class="card skeleton" style="height: 120px;"></div>
+                        <div class="card skeleton" style="height: 120px;"></div>
+                        <div class="card skeleton" style="height: 120px;"></div>
+                    </div>
+                `;
+            } else {
+                main.innerHTML = `
+                    <header class="flex justify-between items-center" style="margin-bottom: var(--space-8);">
+                        <div>
+                            <h1 style="font-size: 1.75rem; margin-bottom: var(--space-1); font-family: 'Outfit';">Investor Dashboard</h1>
+                            <p style="color: var(--text-muted);">Find your next acquisition opportunity.</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button class="btn btn-secondary"><i data-lucide="bell"></i></button>
+                        </div>
+                    </header>
+                    <div id="listings-grid" class="grid grid-cols-2 gap-6">
+                        <div class="card skeleton" style="height: 300px;"></div>
+                        <div class="card skeleton" style="height: 300px;"></div>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+
+            // Artificial delay to show skeleton loaders (premium feel)
+            setTimeout(() => {
+                if (role === 'owner') renderOwnerDashboard();
+                else renderBuyerDashboard();
+            }, 800);
+        }
+
+        function renderOwnerDashboard() {
+            document.getElementById('stats-grid').innerHTML = `
+                <div class="card animate-fade-in">
+                    <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Profile Views</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 8px 0;">1,284</div>
+                    <div style="color: var(--success); font-size: 0.75rem;">+12% this week</div>
+                </div>
+                <div class="card animate-fade-in" style="animation-delay: 0.1s">
+                    <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Potential Matches</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 8px 0;">24</div>
+                    <div style="color: var(--success); font-size: 0.75rem;">8 new today</div>
+                </div>
+                <div class="card animate-fade-in" style="animation-delay: 0.2s">
+                    <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Verified Inquiries</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 8px 0;">5</div>
+                    <div style="color: var(--warning); font-size: 0.75rem;">2 pending NDA</div>
+                </div>
+            `;
+
+            // Add Milestone Tracker Section
+            const milestoneSection = document.createElement('div');
+            milestoneSection.className = 'card animate-fade-in';
+            milestoneSection.style.marginTop = 'var(--space-8)';
+            milestoneSection.style.animationDelay = '0.3s';
+            milestoneSection.innerHTML = `
+                <h3 style="font-family: 'Outfit'; font-size: 1.25rem; margin-bottom: var(--space-6);">Active Deal Pipeline</h3>
+                <div class="flex flex-col gap-6">
+                    ${renderDealRow('Private Equity Group A', 2)}
+                    ${renderDealRow('Retail Acquisitions LLC', 1)}
+                    ${renderDealRow('Global Tech Partners', 4)}
+                </div>
+            `;
+            main.appendChild(milestoneSection);
+            lucide.createIcons();
+        }
+
+        function renderDealRow(name, stage) {
+            const stages = ['Inquiry', 'NDA', 'DD', 'LOI', 'Closing'];
+            return `
+                <div style="border-bottom: 1px solid var(--border); padding-bottom: var(--space-4);">
+                    <div class="flex justify-between items-center" style="margin-bottom: var(--space-4);">
+                        <div style="font-weight: 600;">${name}</div>
+                        <div class="badge badge-primary">Stage: ${stages[stage]}</div>
+                    </div>
+                    <div class="milestone-container">
+                        ${stages.map((s, i) => `
+                            <div class="milestone-step ${i <= stage ? 'active' : ''}">
+                                <div class="milestone-dot"><i data-lucide="${i < stage ? 'check' : 'circle'}" size="14"></i></div>
+                                <div class="milestone-label">${s}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBuyerDashboard() {
+            // Re-using logic from buyer-dashboard.html would go here
+            document.getElementById('dashboard-main').innerHTML += '<p>Search results will appear here...</p>';
+            lucide.createIcons();
+        }
+
+        renderSidebar();
+        loadView();
+    </script>
+</body>
+
+</html>
