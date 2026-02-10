@@ -92,11 +92,16 @@ const auth = {
     },
 
     signOut: async () => {
-        if (supabaseClient) {
-            await supabaseClient.auth.signOut();
+        try {
+            if (supabaseClient) {
+                await supabaseClient.auth.signOut();
+            }
+        } catch (err) {
+            console.error('Sign out error:', err);
+        } finally {
+            localStorage.removeItem('dealDoneUser');
+            window.location.href = 'index.html';
         }
-        localStorage.removeItem('dealDoneUser');
-        // window.location.href = 'index.html';
     },
 
     getUser: () => {
