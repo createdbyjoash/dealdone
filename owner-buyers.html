@@ -153,7 +153,7 @@
                     <div class="match-score">98%</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">Match Score</div>
                     <button class="btn btn-primary"
-                        onclick="window.location.href='owner-messages.html'">Contact</button>
+                        onclick="// window.location.href='owner-messages.html'">Contact</button>
                 </div>
             </div>
 
@@ -202,7 +202,7 @@
     <script src="js/supabase.js"></script>
     <script>
         lucide.createIcons();
-        if (!window.dealDone.auth.getUser()) window.location.href = 'auth.html';
+        // if (!window.dealDone.auth.getUser()) window.location.href = 'auth.html';
         document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
     </script>
 </body>

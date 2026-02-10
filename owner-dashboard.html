@@ -252,7 +252,7 @@
         lucide.createIcons();
 
         const user = window.dealDone.auth.getUser();
-        if (!user) window.location.href = 'auth.html';
+        // if (!user) window.location.href = 'auth.html';
 
         document.getElementById('user-name').textContent = user.user_metadata?.full_name || 'Owner';
 

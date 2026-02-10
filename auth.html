@@ -215,7 +215,7 @@
                     // On success, redirect to appropriate dashboard
                     const user = window.dealDone.auth.getUser();
                     const type = user.user_metadata?.type || 'owner';
-                    window.location.href = type === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
+                    // window.location.href = type === 'owner' ? 'owner-dashboard.html' : 'buyer-dashboard.html';
                 } else {
                     const fullName = document.getElementById('full_name').value;
                     const { data, error } = await window.dealDone.auth.signUp({
@@ -231,7 +231,7 @@
                     if (error) throw error;
 
                     alert('Registration successful! Redirecting...');
-                    window.location.href = `confirmation.html?type=${selectedType}`;
+                    // window.location.href = `confirmation.html?type=${selectedType}`;
                 }
             } catch (err) {
                 alert('Authentication error: ' + err.message);

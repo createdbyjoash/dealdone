@@ -186,7 +186,7 @@
     <script>
         lucide.createIcons();
         const user = window.dealDone.auth.getUser();
-        if (!user) window.location.href = 'auth.html';
+        // if (!user) window.location.href = 'auth.html';
 
         document.getElementById('full-name-input').value = user.user_metadata?.full_name || '';
         document.getElementById('email-input').value = user.email || '';

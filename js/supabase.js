@@ -42,7 +42,7 @@ const mockAuth = {
     },
     signOut: async () => {
         localStorage.removeItem('dealDoneUser');
-        window.location.href = 'index.html';
+        // window.location.href = 'index.html';
     },
     getUser: () => {
         const user = localStorage.getItem('dealDoneUser');
@@ -71,7 +71,7 @@ const auth = {
             await supabaseClient.auth.signOut();
         }
         localStorage.removeItem('dealDoneUser');
-        window.location.href = 'index.html';
+        // window.location.href = 'index.html';
     },
 
     getUser: () => {

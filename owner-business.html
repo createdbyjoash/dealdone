@@ -227,7 +227,7 @@
     <script>
         lucide.createIcons();
         const user = window.dealDone.auth.getUser();
-        if (!user) window.location.href = 'auth.html';
+        // if (!user) window.location.href = 'auth.html';
 
         document.getElementById('logout-btn').addEventListener('click', () => window.dealDone.auth.signOut());
 

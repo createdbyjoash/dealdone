@@ -152,7 +152,7 @@
             </div>
             <div class="flex gap-4">
                 <button id="notification-bell" class="btn btn-secondary"
-                    onclick="window.location.href='buyer-messages.html'"><i data-lucide="bell"></i></button>
+                    onclick="// window.location.href='buyer-messages.html'"><i data-lucide="bell"></i></button>
                 <div class="flex items-center gap-2">
                     <div
                         style="width: 32px; height: 32px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">
@@ -290,7 +290,7 @@
 
         // Auth Check
         const user = window.dealDone.auth.getUser();
-        if (!user) window.location.href = 'auth.html';
+        // if (!user) window.location.href = 'auth.html';
 
         // User Initials
         const userName = user.user_metadata?.full_name || 'Buyer';
@@ -419,8 +419,8 @@
                 content: initialMessage
             });
 
-            // Redirect to messages page
-            window.location.href = 'buyer-messages.html';
+            // Redirect to messages page (removed)
+            // window.location.href = 'buyer-messages.html';
         }
 
         closeModalBtn.addEventListener('click', closeBusinessModal);
