@@ -236,8 +236,24 @@ p {
     gap: var(--space-4);
 }
 
+.gap-5 {
+    gap: var(--space-5);
+}
+
+.gap-6 {
+    gap: var(--space-6);
+}
+
 .gap-8 {
     gap: var(--space-8);
+}
+
+.gap-10 {
+    gap: var(--space-10);
+}
+
+.gap-12 {
+    gap: var(--space-12);
 }
 
 .grid {
