@@ -416,6 +416,15 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (!user || !user.id) {
+                alert('You must be logged in to save a business listing.');
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
             const data = {
                 owner_id: user.id,
                 name: document.getElementById('biz-name').value,
@@ -425,9 +434,23 @@
                 description: document.getElementById('biz-desc').value
             };
 
-            await window.dealDone.db.saveBusiness(data);
-            await loadBusiness(); // Refresh
-            closeModal();
+            try {
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+
+                const { error } = await window.dealDone.db.saveBusiness(data);
+                if (error) throw error;
+
+                alert('Business listing saved successfully!');
+                await loadBusiness(); // Refresh
+                closeModal();
+            } catch (err) {
+                console.error('Save Error:', err);
+                alert('Failed to save business: ' + (err.message || 'Unknown error'));
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
 
         // Simple Valuation Calculator Logic

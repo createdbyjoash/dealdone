@@ -151,22 +151,70 @@ const db = {
     // Save business profile
     saveBusiness: async (businessData) => {
         if (supabaseClient) {
-            // Check if business exists for this owner
-            const { data: existing } = await supabaseClient
+            console.log('Supabase: Attempting to save business', businessData);
+
+            // 1. Ensure profile exists (Supabase trigger usually handles this, but let's be sure)
+            const { data: profile, error: profileError } = await supabaseClient
+                .from('profiles')
+                .select('id')
+                .eq('id', businessData.owner_id)
+                .maybeSingle();
+
+            if (!profile) {
+                console.warn('Profile not found, attempting to create one...');
+                const user = (await supabaseClient.auth.getUser()).data.user;
+                if (user) {
+                    await supabaseClient.from('profiles').insert([{
+                        id: user.id,
+                        full_name: user.user_metadata?.full_name || 'User',
+                        user_type: user.user_metadata?.type || 'owner'
+                    }]);
+                }
+            }
+
+            // 2. Check for existing business
+            const { data: existing, error: fetchError } = await supabaseClient
                 .from('businesses')
                 .select('id')
                 .eq('owner_id', businessData.owner_id)
-                .single();
+                .maybeSingle();
+
+            if (fetchError) {
+                console.error('Fetch Error:', fetchError);
+                return { data: null, error: fetchError };
+            }
 
             if (existing) {
-                return await supabaseClient
+                console.log('Supabase: Updating business', existing.id);
+                const { data, error } = await supabaseClient
                     .from('businesses')
-                    .update(businessData)
-                    .eq('id', existing.id);
+                    .update({
+                        name: businessData.name,
+                        industry: businessData.industry,
+                        revenue: businessData.revenue,
+                        valuation: businessData.valuation,
+                        description: businessData.description,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', existing.id)
+                    .select()
+                    .single();
+
+                if (error) console.error('Update Error:', error);
+                return { data, error };
             } else {
-                return await supabaseClient
+                console.log('Supabase: Inserting new business');
+                const { data, error } = await supabaseClient
                     .from('businesses')
-                    .insert([businessData]);
+                    .insert([{
+                        ...businessData,
+                        is_active: true
+                    }])
+                    .select()
+                    .single();
+
+                if (error) console.error('Insert Error:', error);
+                return { data, error };
             }
         } else {
             console.log('Mock: Saving business', businessData);
