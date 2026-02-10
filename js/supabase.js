@@ -75,16 +75,21 @@ const auth = {
     },
 
     getUser: () => {
-        if (supabaseClient) {
-            // Try to get from Supabase session first
-            const session = supabaseClient.auth.getSession();
-            if (session) {
-                return session.user;
-            }
-        }
-        // Fallback to localStorage
+        // Fallback to localStorage for synchronous check if needed, 
+        // but primary check should be through Supabase session if available
         const user = localStorage.getItem('dealDoneUser');
         return user ? JSON.parse(user) : null;
+    },
+
+    getSession: async () => {
+        if (supabaseClient) {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            if (session) {
+                localStorage.setItem('dealDoneUser', JSON.stringify(session.user));
+                return session;
+            }
+        }
+        return null;
     }
 };
 

@@ -213,32 +213,47 @@
                     });
                     if (error) throw error;
 
-                    // On success, redirect to appropriate dashboard
-                    const user = window.dealDone.auth.getUser();
-                    const type = user.user_metadata?.type || 'owner';
-                    // window.location.href = 'dashboard.html';
+                    if (data.user) {
+                        localStorage.setItem('dealDoneUser', JSON.stringify(data.user));
+                        showSuccess(`Welcome back, ${data.user.user_metadata?.full_name || 'User'}!`);
+                    }
                 } else {
                     const fullName = document.getElementById('full_name').value;
                     const { data, error } = await window.dealDone.auth.signUp({
                         email: email,
                         password: password,
-                        options: {
-                            data: {
-                                full_name: fullName,
-                                type: selectedType
-                            }
-                        }
+                        options: { data: { full_name: fullName, type: selectedType } }
                     });
                     if (error) throw error;
 
-                    alert('Registration successful! Redirecting...');
-                    // window.location.href = `confirmation.html?type=${selectedType}`;
+                    if (data.user) {
+                        localStorage.setItem('dealDoneUser', JSON.stringify(data.user));
+                        showSuccess(`Account created for ${data.user.user_metadata?.full_name || 'User'}!`);
+                    }
                 }
             } catch (err) {
                 alert('Authentication error: ' + err.message);
                 submitText.textContent = isLogin ? 'Sign In' : 'Create Account';
             }
         });
+
+        function showSuccess(message) {
+            const card = document.querySelector('.auth-card');
+            card.innerHTML = `
+                <div style="text-align: center; padding: var(--space-8);">
+                    <div style="background: var(--success); color: white; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-6);">
+                        <i data-lucide="check-circle" size="32"></i>
+                    </div>
+                    <h2 style="font-family: 'Outfit'; margin-bottom: var(--space-2);">Success!</h2>
+                    <p style="color: var(--text-muted); margin-bottom: var(--space-8);">${message}</p>
+                    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-8); text-align: left;">
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: var(--space-2);"><strong>Action Required:</strong> Since you requested to remove automatic redirects, please click below to enter your dashboard manually.</p>
+                    </div>
+                    <a href="dashboard.html" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block;">Enter Dashboard</a>
+                </div>
+            `;
+            lucide.createIcons();
+        }
     </script>
 </body>
 
