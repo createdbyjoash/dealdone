@@ -368,18 +368,9 @@
 
         // Logic
         async function loadBusiness() {
-            // Re-using the logic from supabase.js 'getBusinesses' but we need to fetch specific owner
-            // Since we didn't export a 'getOwnerBusiness', we'll do raw query here
-            if (!window.dealDone.supabase) {
-                console.warn('Supabase not connected');
-                return;
-            }
+            loadingState.style.display = 'block';
 
-            const { data, error } = await window.dealDone.supabase
-                .from('businesses')
-                .select('*')
-                .eq('owner_id', user.id)
-                .single();
+            const { data, error } = await window.dealDone.db.getBusinessByOwner(user.id);
 
             loadingState.style.display = 'none';
 
@@ -429,8 +420,8 @@
                 owner_id: user.id,
                 name: document.getElementById('biz-name').value,
                 industry: document.getElementById('biz-industry').value,
-                revenue: document.getElementById('biz-revenue').value,
-                valuation: document.getElementById('biz-valuation').value,
+                revenue: Number(document.getElementById('biz-revenue').value),
+                valuation: Number(document.getElementById('biz-valuation').value),
                 description: document.getElementById('biz-desc').value
             };
 
@@ -460,11 +451,7 @@
 
             const confirmed = confirm(`Update your asking price to $${estimate.toLocaleString()}?`);
             if (confirmed) {
-                const { data: currentBiz } = await window.dealDone.supabase
-                    .from('businesses')
-                    .select('*')
-                    .eq('owner_id', user.id)
-                    .single();
+                const { data: currentBiz } = await window.dealDone.db.getBusinessByOwner(user.id);
 
                 if (currentBiz) {
                     currentBiz.valuation = estimate;

@@ -47,6 +47,31 @@ const mockAuth = {
     getUser: () => {
         const user = localStorage.getItem('dealDoneUser');
         return user ? JSON.parse(user) : null;
+    },
+    // Mock helper to get listings
+    getMockBusinesses: () => {
+        const biz = localStorage.getItem('dealDoneBusinesses');
+        return biz ? JSON.parse(biz) : [];
+    },
+    // Mock helper to save listings
+    saveMockBusiness: (data) => {
+        const businesses = mockAuth.getMockBusinesses();
+        const index = businesses.findIndex(b => b.owner_id === data.owner_id);
+
+        const newBiz = {
+            ...data,
+            id: data.id || 'mock-biz-' + Math.random(),
+            created_at: data.created_at || new Date().toISOString()
+        };
+
+        if (index >= 0) {
+            businesses[index] = newBiz;
+        } else {
+            businesses.push(newBiz);
+        }
+
+        localStorage.setItem('dealDoneBusinesses', JSON.stringify(businesses));
+        return newBiz;
     }
 };
 
@@ -102,8 +127,24 @@ const db = {
         if (supabaseClient) {
             return await supabaseClient.from('businesses').select('*');
         } else {
-            console.warn('Supabase client not initialized');
-            return { data: [], error: 'Client not initialized' };
+            console.log('Mock: Fetching all businesses');
+            const data = mockAuth.getMockBusinesses();
+            return { data, error: null };
+        }
+    },
+
+    // Get business by owner ID
+    getBusinessByOwner: async (ownerId) => {
+        if (supabaseClient) {
+            return await supabaseClient
+                .from('businesses')
+                .select('*')
+                .eq('owner_id', ownerId)
+                .single();
+        } else {
+            const businesses = mockAuth.getMockBusinesses();
+            const data = businesses.find(b => b.owner_id === ownerId);
+            return { data: data || null, error: null };
         }
     },
 
@@ -128,8 +169,9 @@ const db = {
                     .insert([businessData]);
             }
         } else {
-            console.log('Mock Save Business:', businessData);
-            return { data: businessData, error: null };
+            console.log('Mock: Saving business', businessData);
+            const data = mockAuth.saveMockBusiness(businessData);
+            return { data, error: null };
         }
     },
 
